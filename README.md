@@ -1,4 +1,4 @@
-# Stock Market Project
+# GridKey
 
 This project is a Django-based backend for managing stock transactions (BUY, SELL, SPLIT) using FIFO processing, JWT authentication, and stock summary calculations. It is designed to run as an ASGI application served by Uvicorn and can be containerized with Docker.
 
@@ -14,7 +14,7 @@ This project is a Django-based backend for managing stock transactions (BUY, SEL
 
 ## Project Overview
 
-The Stock Market Project implements:
+The Grid Key (Trade Simulation) implements:
 - **Trade Operations:**  
   - **BUY:** Record buy transactions.
   - **SELL:** Process sell transactions using FIFO logic.
@@ -43,23 +43,18 @@ The Stock Market Project implements:
 1. **Clone the Repository:**
    ```bash
    git clone <repository_url>
-   cd stock_market_project
+   cd GridKeyAsses
 
-2. **Create and Activate a Virtual Environment:**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate   # On Windows: venv\Scripts\activate
-
-3. **Install Dependencies:**
+2. **Install Dependencies:**
    ```bash
    pip install -r requirements.txt
 
-4. **Migrations**
+3. **Migrations**
    ```bash
    python manage.py makemigrations
    python manage.py migrate
 
-5. **Start Server:**
+4. **Start Server:**
    ```bash
    uvicorn stock_market_project.asgi:application --host 0.0.0.0 --port 8000
    
