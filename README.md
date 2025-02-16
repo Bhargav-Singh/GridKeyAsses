@@ -56,7 +56,7 @@ The Grid Key (Trade Simulation) implements:
 
 4. **Start Server:**
    ```bash
-   uvicorn stock_market_project.asgi:application --host 0.0.0.0 --port 8000
+   uvicorn GridView.asgi:application --host 0.0.0.0 --port 8000
    
 
 ## API Endpoints
