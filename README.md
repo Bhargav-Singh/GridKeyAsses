@@ -1,4 +1,4 @@
-# GridKey
+# GridView @ GridKey
 
 This project is a Django REST Framework-based backend for managing stock transactions (BUY, SELL, SPLIT) using FIFO processing, JWT authentication, and stock summary calculations. It is designed to run as an ASGI application served by Uvicorn and can be containerized with Docker.
 
