@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Record a Trade</title>
+    <style>
+        label { display: inline-block; width: 100px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <h1>Record a Trade</h1>
+    {% if message %}
+        <p style="color: green;">{{ message }}</p>
+    {% endif %}
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <p>
+            <label for="trade_type">Trade Type:</label>
+            <select id="trade_type" name="trade_type" required>
+                <option value="BUY">BUY</option>
+                <option value="SELL">SELL</option>
+                <option value="SPLIT">SPLIT</option>
+            </select>
+        </p>
+        <p>
+            <label for="company">Company:</label>
+            <input type="text" id="company" name="company" required>
+        </p>
+        <p id="quantity_p">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity">
+        </p>
+        <p id="price_p">
+            <label for="price">Price:</label>
+            <input type="text" id="price" name="price">
+        </p>
+        <p id="split_ratio_p" class="hidden">
+            <label for="split_ratio">Split Ratio:</label>
+            <input type="text" id="split_ratio" name="split_ratio">
+        </p>
+        <p>
+            <input type="submit" value="Submit Trade">
+        </p>
+    </form>
+
+    <script>
+        // Show/hide fields based on selected trade type.
+        var tradeTypeEl = document.getElementById('trade_type');
+        var quantityP = document.getElementById('quantity_p');
+        var priceP = document.getElementById('price_p');
+        var splitRatioP = document.getElementById('split_ratio_p');
+
+        function updateFormFields() {
+            var tradeType = tradeTypeEl.value;
+            if (tradeType === 'SPLIT') {
+                quantityP.classList.add('hidden');
+                priceP.classList.add('hidden');
+                splitRatioP.classList.remove('hidden');
+            } else {
+                quantityP.classList.remove('hidden');
+                priceP.classList.remove('hidden');
+                splitRatioP.classList.add('hidden');
+            }
+        }
+        tradeTypeEl.addEventListener('change', updateFormFields);
+        updateFormFields(); // initialize on page load
+    </script>
+</body>
+</html>

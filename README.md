@@ -1,2 +1,172 @@
-# GridKeyAsses
-In this repository, I'll be implementing assignment code for gridkey.
+# Stock Market Project
+
+This project is a Django-based backend for managing stock transactions (BUY, SELL, SPLIT) using FIFO processing, JWT authentication, and stock summary calculations. It is designed to run as an ASGI application served by Uvicorn and can be containerized with Docker.
+
+---
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Prerequisites](#prerequisites)
+- [Setup Instructions](#setup-instructions)
+- [API Endpoints](#api-endpoints)
+---
+
+## Project Overview
+
+The Stock Market Project implements:
+- **Trade Operations:**  
+  - **BUY:** Record buy transactions.
+  - **SELL:** Process sell transactions using FIFO logic.
+  - **SPLIT:** Adjust existing BUY trades when a stock split occurs.
+- **Stock Summary:**  
+  Calculate volume-weighted average buy price and total remaining quantity per company.
+- **Authentication:**  
+  Uses JWT for authentication with an extended access token lifetime.
+- **ASGI Server:**  
+  Deployed with Uvicorn for asynchronous support.
+
+---
+
+## Prerequisites
+
+- **Python 3.8+**
+- **PostgreSQL** (configured in `settings.py`)
+- **Docker** (optional, for containerized deployment)
+
+---
+
+## Setup Instructions
+
+### Local Setup
+
+1. **Clone the Repository:**
+   ```bash
+   git clone <repository_url>
+   cd stock_market_project
+
+2. **Create and Activate a Virtual Environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate   # On Windows: venv\Scripts\activate
+
+3. **Install Dependencies:**
+   ```bash
+   pip install -r requirements.txt
+
+4. **Migrations**
+   ```bash
+   python manage.py makemigrations
+   python manage.py migrate
+
+5. **Start Server:**
+   ```bash
+   uvicorn stock_market_project.asgi:application --host 0.0.0.0 --port 8000
+   
+## API Endpoints
+
+### User Management
+
+- **Register User**
+  - **Endpoint:** `POST /api/users/register/`
+  - **Description:** Registers a new user in the system.
+  - **Request Body:**
+    ```json
+    {
+      "username": "testuser",
+      "email": "testuser@example.com",
+      "password": "TestPass123!",
+      "password2": "TestPass123!"
+    }
+    ```
+  - **Response:**
+    - **201 Created:** User registered successfully.
+    - **400 Bad Request:** Validation errors or missing fields.
+
+- **User Login**
+  - **Endpoint:** `POST /api/users/login/`
+  - **Description:** Authenticates a user and returns a JWT access token.
+  - **Request Body:**
+    ```json
+    {
+      "username": "testuser",
+      "password": "TestPass123!"
+    }
+    ```
+  - **Response:**
+    - **200 OK:** Returns an access token.
+      ```json
+      {
+        "access": "YOUR_ACCESS_TOKEN_HERE"
+      }
+      ```
+    - **400 Bad Request:** Invalid credentials.
+
+- **User Profile**
+  - **Endpoint:** `GET /api/users/profile/`
+  - **Description:** Retrieves the profile details of the authenticated user.
+  - **Headers:**
+    - `Authorization: Bearer YOUR_ACCESS_TOKEN_HERE`
+  - **Response:**
+    - **200 OK:** Returns user profile data.
+    - **401 Unauthorized:** Token is missing or invalid.
+
+---
+
+### Trade Operations
+
+- **Record Trade**
+  - **Endpoint:** `POST /api/trades/record/{TRADE_TYPE}`
+  - **Description:** Records a trade transaction (BUY, SELL, or SPLIT) with proper validations.
+  - **Request Body Examples:**
+    - **BUY Trade:**
+      ```json
+      {
+        "company": "ABC Ltd.",
+        "quantity": 50,
+        "price": "260.00"
+      }
+      ```
+    - **SELL Trade:**
+      ```json
+      {
+        "company": "ABC Ltd.",
+        "quantity": 20,
+        "price": "275.00"
+      }
+      ```
+    - **SPLIT Trade:**
+      ```json
+      {
+        "company": "ABC Ltd.",
+        "split_ratio": 5
+      }
+      ```
+  - **Headers:**
+    - `Authorization: Bearer YOUR_ACCESS_TOKEN_HERE`
+  - **Response:**
+    - **201 Created:** Returns details of the recorded trade.
+    - **400 Bad Request:** Validation errors or processing issues.
+
+- **Stock Summary**
+  - **Endpoint:** `GET /api/trades/summary/`
+  - **Description:** Retrieves the stock summary, including total remaining quantity and weighted average buy price for each company.
+  - **Query Parameters:**
+    - `date` (required): The cutoff date in `YYYY-MM-DD` format.
+    - `time_zone` (required): The time zone of the provided date (e.g., `Asia/Kolkata`).
+    - `company` (optional): If provided, filters the summary to a specific company.
+  - **Headers:**
+    - `Authorization: Bearer YOUR_ACCESS_TOKEN_HERE`
+  - **Response:**
+    - **200 OK:** Returns a list of summary objects. Example:
+      ```json
+      [
+        {
+          "company": "ABC Ltd.",
+          "total_quantity": 80,
+          "avg_buy_price": 261.0
+        }
+      ]
+      ```
+    - **400 Bad Request:** Missing or invalid query parameters.
+    - **401 Unauthorized:** Token is missing or invalid.
