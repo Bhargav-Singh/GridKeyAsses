@@ -10,6 +10,7 @@ This project is a Django REST Framework-based backend for managing stock transac
 - [Prerequisites](#prerequisites)
 - [Setup Instructions](#setup-instructions)
 - [API Endpoints](#api-endpoints)
+- [Assignment Simulation](#assignment-simulation)
 ---
 
 ## Project Overview
@@ -175,3 +176,116 @@ The Grid Key (Trade Simulation) implements:
       ```
     - **400 Bad Request:** Missing or invalid query parameters.
     - **401 Unauthorized:** Token is missing or invalid.
+
+
+#  Assignment Simulation
+
+This simulation demonstrates the core API functionalities as per the assignment. The following steps cover:
+
+1. **User Registration**
+2. **User Login**
+3. **Recording a BUY Trade**
+4. **Recording a SELL Trade**
+5. **Recording a SPLIT Trade**
+6. **Fetching Today's Stock Summary**
+
+> **Note:** Replace `access_token` with the JWT access token obtained from the login API.
+
+---
+
+## 1. Create User
+
+Register a new user (investor):
+
+```sh
+curl --location 'http://127.0.0.1:8000/api/users/register/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "username": "investor", 
+    "email": "investor@example.com", 
+    "password": "investor", 
+    "password2": "investor" 
+}'
+```
+
+---
+
+## 2. Login
+
+Authenticate the user to obtain the JWT access token:
+
+```sh
+curl --location 'http://127.0.0.1:8000/api/users/login/' \
+--header 'Content-Type: application/json' \
+--data '{
+    "username": "investor", 
+    "password": "investor" 
+}'
+```
+
+After a successful login, copy the access token and set it as `access_token` in your Postman environment or replace it in subsequent cURL commands.
+
+---
+
+## 3. Record BUY Trade
+
+Record a BUY trade for company "REL IND" (buy 50 shares at 260.00):
+
+```sh
+curl --location 'http://127.0.0.1:8000/api/trades/record/BUY/' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer access_token' \
+--data '{
+    "company": "REL IND",
+    "quantity": 50,
+    "price": "260.00"
+}'
+```
+
+---
+
+## 4. Record SELL Trade
+
+Record a SELL trade for "REL IND" (sell 20 shares at 275.00):
+
+```sh
+curl --location 'http://127.0.0.1:8000/api/trades/record/SELL/' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer access_token' \
+--data '{
+    "company": "REL IND",
+    "quantity": 20,
+    "price": "275.00"
+}'
+```
+
+---
+
+## 5. Record SPLIT Trade
+
+Record a SPLIT trade for "REL IND" with a split ratio of 5:
+
+```sh
+curl --location 'http://127.0.0.1:8000/api/trades/record/SPLIT/' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer access_token' \
+--data '{
+    "company": "REL IND",
+    "split_ratio": 5
+}'
+```
+
+---
+
+## 6. Get Today's Stock Summary
+
+Retrieve today's stock summary for the authenticated user, using the `Asia/Kolkata` time zone:
+
+```sh
+curl --location 'http://127.0.0.1:8000/api/trades/summary/?period=today&time_zone=Asia%2FKolkata' \
+--header 'Authorization: Bearer access_token'
+```
+
+---
+
+
