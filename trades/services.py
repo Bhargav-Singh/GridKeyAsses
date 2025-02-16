@@ -1,4 +1,5 @@
 import logging
+from decimal import Decimal
 
 from django.db import transaction
 from django.db.models import Sum, F, FloatField
@@ -136,9 +137,9 @@ class TradeService:
             )
             for trade in buy_trades:
                 original_balance = trade.balance_qty
-                trade.balance_qty = trade.balance_qty * split_ratio
+                trade.balance_qty = trade.balance_qty * Decimal(split_ratio)
                 if trade.price is not None:
-                    trade.price = trade.price / split_ratio
+                    trade.price = trade.price / Decimal(split_ratio)
                 trade.save()
                 logger.info("Updated BUY trade for SPLIT")
 
