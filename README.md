@@ -63,6 +63,7 @@ The Stock Market Project implements:
    ```bash
    uvicorn stock_market_project.asgi:application --host 0.0.0.0 --port 8000
    
+
 ## API Endpoints
 
 ### User Management
@@ -116,8 +117,8 @@ The Stock Market Project implements:
 ### Trade Operations
 
 - **Record Trade**
-  - **Endpoint:** `POST /api/trades/record/{TRADE_TYPE}`
-  - **Description:** Records a trade transaction (BUY, SELL, or SPLIT) with proper validations.
+  - **Endpoint:** `POST /api/trades/record/<trade_type>/`
+  - **Description:** Records a trade transaction for BUY, SELL, or SPLIT. The trade type is provided as a URL path parameter.
   - **Request Body Examples:**
     - **BUY Trade:**
       ```json
@@ -148,17 +149,26 @@ The Stock Market Project implements:
     - **201 Created:** Returns details of the recorded trade.
     - **400 Bad Request:** Validation errors or processing issues.
 
+---
+
+### Stock Summary
+
 - **Stock Summary**
   - **Endpoint:** `GET /api/trades/summary/`
-  - **Description:** Retrieves the stock summary, including total remaining quantity and weighted average buy price for each company.
+  - **Description:** Retrieves a summary of BUY trades (remaining quantity and weighted average buy price) for the authenticated user.
   - **Query Parameters:**
-    - `date` (required): The cutoff date in `YYYY-MM-DD` format.
-    - `time_zone` (required): The time zone of the provided date (e.g., `Asia/Kolkata`).
-    - `company` (optional): If provided, filters the summary to a specific company.
+    - `time_zone` (optional, default: `UTC`): The local time zone of the provided dates.
+    - `period` (optional): Predefined period filter. Supported values:
+      - `today` – Summary for the current day.
+      - `this_month` – Summary for the current month.
+      - `custom` – Custom date range (requires `start_date` and `end_date`).
+    - `start_date` and `end_date` (required if period is `custom`): Dates in `YYYY-MM-DD` format.
+    - `date` (optional): A specific day (in `YYYY-MM-DD` format) that overrides the period if provided.
+    - `company` (optional): Filters the summary by company name.
   - **Headers:**
     - `Authorization: Bearer YOUR_ACCESS_TOKEN_HERE`
   - **Response:**
-    - **200 OK:** Returns a list of summary objects. Example:
+    - **200 OK:** Returns a list of summary objects. Example response:
       ```json
       [
         {
